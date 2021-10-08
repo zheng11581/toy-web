@@ -17,10 +17,9 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "这是创建用户")
 }
 
-func order(w http.ResponseWriter, r *http.Request)  {
+func order(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "这是订单")
 }
-
 
 func main() {
 	http.HandleFunc("/", home)
@@ -28,13 +27,4 @@ func main() {
 	http.HandleFunc("/user/create", createUser)
 	http.HandleFunc("/order", order)
 	http.ListenAndServe(":8080", nil)
-}
-
-type Server interface {
-	Route(pattern string, handlerFunc http.HandlerFunc)
-	Start(address string) error
-}
-
-type sdkHttpServer struct {
-	Name string
 }
