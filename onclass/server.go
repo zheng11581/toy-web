@@ -3,19 +3,25 @@ package main
 import "net/http"
 
 type Server interface {
-	Route(pattern string, handlerFunc http.HandlerFunc)
+	Route(method string, pattern string, handleFunc func(ctx *Context))
 	Start(address string) error
 }
 
 type sdkHttpServer struct {
-	Name string
+	Name    string
+	handler *HandlerBasedOnMap
 }
 
-func (s *sdkHttpServer) Route(pattern string, handlerFunc http.HandlerFunc) {
-	http.Handle(pattern, handlerFunc)
+func (s *sdkHttpServer) Route(
+	method string,
+	pattern string,
+	handleFunc func(ctx *Context)) {
+	key := s.handler.key(method, pattern)
+	s.handler.handlers[key] = handleFunc
 }
 
 func (s sdkHttpServer) Start(address string) error {
+	http.Handle("/", s.handler)
 	err := http.ListenAndServe(address, nil)
 	return err
 }
