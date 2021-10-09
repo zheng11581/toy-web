@@ -11,6 +11,7 @@ type Context struct {
 	R *http.Request
 }
 
+// ReaJson 读取request请求中的body，反序列化到struct结构体中
 func (ctx *Context) ReaJson(req interface{}) error {
 	r := ctx.R
 	body, err := io.ReadAll(r.Body)

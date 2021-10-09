@@ -23,13 +23,12 @@ func order(w http.ResponseWriter, r *http.Request) {
 
 func signUp(ctx *Context) {
 	req := &signUpReq{}
-
+	// 读取
 	err := ctx.ReaJson(req)
 	if err != nil {
 		ctx.BadRequestJson(err)
 		return
 	}
-
 	resp := &commonResponse{
 		Data: 123,
 	}
@@ -38,6 +37,26 @@ func signUp(ctx *Context) {
 		ctx.BadRequestJson(err)
 		return
 	}
+}
+
+func reqInfo(ctx *Context) {
+	req := &reqInfoReq{}
+	err := ctx.ReaJson(req)
+	if err != nil {
+		ctx.BadRequestJson(err)
+	}
+	data := make(map[string]string)
+	data["host"] = ctx.R.Host
+	data["url"] = ctx.R.RequestURI
+	resp := &commonResponse{
+		Data: data,
+	}
+	err = ctx.WriteJson(http.StatusOK, resp)
+	if err != nil {
+		ctx.BadRequestJson(err)
+		return
+	}
+
 }
 
 type signUpReq struct {
@@ -52,12 +71,20 @@ type commonResponse struct {
 	Data    interface{} `json:"data"`
 }
 
+type reqInfoReq struct {
+	IpAddr     string `json:"ip"`
+	Port       string `json:"port"`
+	RequestUri string `json:"request_uri"`
+}
+
 func main() {
 	server := NewHttpServer("test-server")
 	//server.Route("/", home)
 	//server.Route("/user", user)
 	//server.Route("/user/create", createUser)
 	server.Route("POST", "/user/signup", signUp)
+	server.Route("POST", "/request/info", reqInfo)
+
 	//server.Route("/order", order)
 	server.Start(":8080")
 }

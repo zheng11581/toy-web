@@ -1,6 +1,8 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+)
 
 type Server interface {
 	Route(method string, pattern string, handleFunc func(ctx *Context))
@@ -23,6 +25,9 @@ func (s *sdkHttpServer) Route(
 func (s sdkHttpServer) Start(address string) error {
 	http.Handle("/", s.handler)
 	err := http.ListenAndServe(address, nil)
+	if err != nil {
+		return err
+	}
 	return err
 }
 
