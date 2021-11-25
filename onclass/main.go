@@ -82,9 +82,12 @@ func main() {
 	//server.Route("/", home)
 	//server.Route("/user", user)
 	//server.Route("/user/create", createUser)
-	server.Route("POST", "/user/signup", signUp)
-	server.Route("POST", "/request/info", reqInfo)
+	server.Route(http.MethodPost, "/user/signup", signUp)
+	server.Route(http.MethodPost, "/request/info", reqInfo)
 
 	//server.Route("/order", order)
-	server.Start(":8080")
+	err := server.Start(":8080")
+	if err != nil {
+		panic("Server启动失败")
+	}
 }
